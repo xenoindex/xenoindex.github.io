@@ -23,8 +23,8 @@
         height: 40px;
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        padding: 0 10px;
+        align-items: stretch;
+        padding: 0 48px;
     }
 
     .decagram-container {
@@ -67,10 +67,12 @@
     .dropdown > span {
         font-size: 24pt;
         font-weight: bold;
-        padding-left: 50px;
-        padding-right: 50px;
+        padding: 0px 48px;
+        /* padding-left: 48px; */
+        /* padding-right: 48px; */
         cursor: pointer;
         color: black;
+        display: block;
     }
 
     .dropdown:hover > span {
@@ -83,6 +85,10 @@
         background-color: #ffffff;
         min-width: 100%;
         z-index: 1;
+        top: 100%;
+        left: 0;
+        margin: 0;
+        padding: 0;
     }
 
     .dropdown:hover .dropdown-content {
@@ -118,6 +124,66 @@
         -moz-user-drag: none;
         -o-user-drag: none;
     }
+
+
+    /* DARK THEME */
+    body.d-theme .banner-top,
+    body.d-theme .banner-bottom,
+    body.d-theme .decagram-container {
+        background-color: #000000;
+    }
+
+    body.d-theme .decagram-container img {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        height: 56px;
+        width: 56px;
+        filter: invert(100%);
+    }
+
+    body.d-theme .banner-top img.center {
+        height: 59px;
+        width: auto;
+        filter: invert(100%);
+    }
+
+    body.d-theme .dropdown > span,
+    body.d-theme .dropdown-content a {
+        color: #ffffff;
+    }
+
+    body.d-theme .dropdown:hover > span,
+    body.d-theme .dropdown-content {
+        background-color: #ff0064;
+    }
+
+    body.d-theme .dropdown-content a:hover {
+        background-color: #000000;
+        color: #ffffff;
+    }
+
+    /* LIGHT THEME */
+    body.l-theme .banner-top,
+    body.l-theme .banner-bottom,
+    body.l-theme .decagram-container {
+        background-color: #ffffff;
+    }
+
+    body.l-theme .dropdown > span,
+    body.l-theme .dropdown-content a {
+        color: #000000;
+    }
+
+    body.l-theme .dropdown:hover > span,
+    body.l-theme .dropdown-content {
+        background-color: #00ffc0;
+    }
+
+    body.l-theme .dropdown-content a:hover {
+        background-color: #ffffff;
+        color: #000000;
+    }
 </style>
 
 <div class="decagram-container">
@@ -126,7 +192,7 @@
 
 <div class="banner-container" id="bannerContainer">
     <div class="banner-top">
-        <a href="index.html">
+        <a href="index.html" id="homeLink">
             <img class="center" src="xenoindex.png" alt="Center Banner Image">
         </a>
     </div>
@@ -134,30 +200,29 @@
         <div class="dropdown">
             <span>links</span>
             <div class="dropdown-content">
-                <a href="https://www.youtube.com/@xenoindex">youtube</a>
-                <a href="https://en.xen.wiki/w/User:Xenoindex">xen wiki</a>
-                <a href="https://discord.gg/BH5qj4qN">-xenoplex-</a>
+                <a href="https://www.youtube.com/@xenoindex" target="_blank">youtube</a>
+                <a href="https://en.xen.wiki/w/User:Xenoindex" target="_blank">xen wiki</a>
+                <a href="https://discord.gg/BH5qj4qN" target="_blank">-xenoplex-</a>
             </div>
         </div>
         <div class="dropdown">
             <span>tools</span>
             <div class="dropdown-content">
-                <a href="tempo_clicker.html">tempo clicker</a>
+                <a href="tempo_clicker.html" id="tempoClickerLink">tempo clicker</a>
             </div>
         </div>
         <div class="dropdown">
             <span>knowledge</span>
             <div class="dropdown-content">
-                <a href="#">forbidden</a>
+                <a href="#" onclick="return false;">forbidden</a>
             </div>
         </div>
         <div class="dropdown">
             <span>themes</span>
             <div class="dropdown-content">
-                <a href="#">xeno</a>
-                <a href="#">dark</a>
-                <a href="#">grey</a>
-                <a href="#">light</a>
+                <a href="#" onclick="setTheme('x')">xeno</a>
+                <a href="#" onclick="setTheme('d')">dark</a>
+                <a href="#" onclick="setTheme('l')">light</a>
             </div>
         </div>
     </div>
