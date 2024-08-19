@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,34 +13,22 @@
             font-family: "Computer Modern Serif", serif;
             background-color: #000000;
             color: white;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         #sketch-container {
+            flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
         }
     </style>
+    <script src="banner.js" defer></script>
 </head>
 
 <body>
-    <script>
-        // Load the banner
-        fetch('banner.html')
-            .then(response => response.text())
-            .then(data => {
-                document.body.insertAdjacentHTML('afterbegin', data);
-                // Update the "tool 1" link to be active
-                const tool1Link = document.querySelector('.banner .dropdown-content a[href="#"]');
-                if (tool1Link) {
-                    tool1Link.href = 'tempo_clicker.html';
-                    tool1Link.textContent = 'Tempo Clicker';
-                    tool1Link.style.fontWeight = 'bold';
-                }
-            })
-            .catch(error => console.error('Error loading banner:', error));
-    </script>
-
     <div id="sketch-container"></div>
 
     <script>
@@ -56,7 +43,8 @@
         let circleFadeTime = 2000; // in milliseconds
 
         function setup() {
-            createCanvas(600, 600);
+            let canvas = createCanvas(600, 600);
+            canvas.parent('sketch-container');
             textAlign(CENTER, CENTER);
             textSize(48);
             frameRate(60);
