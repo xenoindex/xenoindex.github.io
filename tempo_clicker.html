@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tempo Clicker - x e n o [ i ] n d e x</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Computer Modern Serif", serif;
+            background-color: #000000;
+            color: white;
+        }
+
+        #sketch-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        // Load the banner
+        fetch('banner.html')
+            .then(response => response.text())
+            .then(data => {
+                document.body.insertAdjacentHTML('afterbegin', data);
+                // Update the "tool 1" link to be active
+                const tool1Link = document.querySelector('.banner .dropdown-content a[href="#"]');
+                if (tool1Link) {
+                    tool1Link.href = 'tempo_clicker.html';
+                    tool1Link.textContent = 'Tempo Clicker';
+                    tool1Link.style.fontWeight = 'bold';
+                }
+            })
+            .catch(error => console.error('Error loading banner:', error));
+    </script>
+
+    <div id="sketch-container"></div>
+
+    <script>
+        let clickTimes = [];
+        let bpm = 0;
+        let n = 10; // User-definable sample size for running average
+
+        // New variables for circle animation
+        let circles = [];
+        let circleSpeed = 8;
+        let circleMaxSize = 1200;
+        let circleFadeTime = 2000; // in milliseconds
+
+        function setup() {
+            createCanvas(600, 600);
+            textAlign(CENTER, CENTER);
+            textSize(48);
+            frameRate(60);
+        }
+
+        function draw() {
+            background(0);
+
+            // Draw and update circles
+            for (let i = circles.length - 1; i >= 0; i--) {
+                let circle = circles[i];
+                let progress = (millis() - circle.startTime) / circleFadeTime;
+                let circleSize = min(circle.size, circleMaxSize);
+                let alpha = 255 * (1 - progress);
+
+                if (progress >= 1) {
+                    circles.splice(i, 1);
+                } else {
+                    stroke(255, alpha);
+                    strokeWeight(1);
+                    noFill();
+                    ellipse(circle.x, circle.y, circleSize);
+                    circle.size += circleSpeed;
+                }
+            }
+
+            // Display BPM
+            fill(255);
+            noStroke();
+            textSize(96);
+            textAlign(CENTER, CENTER);
+            text(Math.round(bpm) + ' BPM', width / 2, height / 2);
+
+            // Display sample size and circle animation parameters
+            fill(64);
+            textSize(16);
+            textAlign(LEFT, CENTER);
+            text('[⇅] Sample size: ' + n, 10, height - 10);
+        }
+
+        function mousePressed() {
+            if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {
+                // Add new circle
+                circles.push({
+                    x: mouseX,
+                    y: mouseY,
+                    size: 0,
+                    startTime: millis()
+                });
+
+                // Record click time
+                clickTimes.push(millis());
+
+                // Keep only the last n clicks
+                if (clickTimes.length > n) {
+                    clickTimes.shift();
+                }
+
+                // Calculate BPM using running average
+                calculateBPM();
+            }
+        }
+
+        function calculateBPM() {
+            if (clickTimes.length >= 2) {
+                let intervals = [];
+                for (let i = 1; i < clickTimes.length; i++) {
+                    intervals.push(clickTimes[i] - clickTimes[i - 1]);
+                }
+
+                let sum = intervals.reduce((a, b) => a + b, 0);
+                let averageInterval = sum / intervals.length;
+                bpm = 60000 / averageInterval;
+            }
+        }
+
+        function keyPressed() {
+            if (keyCode === UP_ARROW) {
+                n = min(n + 1, 100); // Increase sample size, max 100
+            } else if (keyCode === DOWN_ARROW) {
+                n = max(n - 1, 2); // Decrease sample size, min 2
+            }
+            // Reset clickTimes array when sample size changes
+            clickTimes = clickTimes.slice(-n);
+            calculateBPM();
+        }
+    </script>
+</body>
+
+</html>

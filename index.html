@@ -1,6 +1,75 @@
-<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>- x e n o [ i ] n d e x -</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            color: white;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
 
-	<h1>
-		Hello Sonic Sky
-	</h1>
+        img {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
+
+        .hero-container {
+            position: relative;
+            width: 100%;
+            max-height: calc(100vh - 80px);
+            overflow: hidden;
+        }
+
+        .hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            font-family: "Computer Modern Serif", serif;
+            font-size: 8vw;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-container">
+        <video class="hero-video" autoplay loop muted playsinline>
+            <source src="circle.webm" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+        <div class="hero-text">[welcome]</div>
+    </div>
+
+    <script>
+        // Load the banner
+        fetch('banner.html')
+            .then(response => response.text())
+            .then(data => {
+                document.body.insertAdjacentHTML('afterbegin', data);
+            })
+            .catch(error => console.error('Error loading banner:', error));
+    </script>
 </body>
+</html>

@@ -1,0 +1,151 @@
+<style>
+    .banner {
+        background-color: #ff0064;
+        height: 80px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: black;
+        font-family: "Computer Modern Serif", serif;
+    }
+
+    .banner img.square {
+        position: absolute;
+        left: 10px;
+        height: 56px;
+        width: 59px;
+    }
+
+    .banner img.square:hover {
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .banner img.center {
+        height: 59px;
+        width: auto;
+    }
+
+    .banner-section {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+
+    .banner-left {
+        left: 80px;
+        right: 55%;
+        margin-right: 150px;
+    }
+
+    .banner-right {
+        left: 55%;
+        right: 10px;
+        margin-left: 150px;
+    }
+
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown > span {
+        font-size: 20pt;
+        font-weight: bold;
+        padding: 40px;
+    }
+
+    .dropdown:hover > span {
+        background-color: white;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #ffffff;
+        min-width: 100%;
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown-content a {
+        color: #000000;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-family: "Computer Modern Serif", serif;
+        font-size: 16pt;
+        font-weight: normal;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #ff0064;
+        color: #000000;
+    }
+
+    body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    img {
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+    }
+
+</style>
+
+<div class="banner">
+    <img class="square" src="decagram.png" alt="Left Square Image">
+    <div class="banner-section banner-left">
+        <div class="dropdown">
+            <span>links</span>
+            <div class="dropdown-content">
+                <a href="#">youtube</a>
+                <a href="#">xen wiki</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <span>tools</span>
+            <div class="dropdown-content">
+                <a href="tempo_clicker.html">Tempo Clicker</a>
+                <a href="#">tool 2</a>
+                <a href="#">tool 3</a>
+            </div>
+        </div>
+    </div>
+        <a href="index.html">
+            <img class="center" src="xenoindex.png" alt="Center Banner Image">
+        </a>
+    <div class="banner-section banner-right">
+        <div class="dropdown">
+            <span>knowledge</span>
+            <div class="dropdown-content">
+                <a href="#">coming soon</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <span>themes</span>
+            <div class="dropdown-content">
+                <a href="#">xeno</a>
+                <a href="#">dark</a>
+                <a href="#">grey</a>
+                <a href="#">light</a>
+            </div>
+        </div>
+    </div>
+</div>
