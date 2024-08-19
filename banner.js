@@ -47,6 +47,7 @@ function updateLinks() {
 
     const links = [
         { id: 'homeLink', path: 'index.html' },
+        { id: 'toneCircleLink', path: 'tone_circle.html' },
         { id: 'tempoClickerLink', path: 'tempo_clicker.html' }
     ];
 

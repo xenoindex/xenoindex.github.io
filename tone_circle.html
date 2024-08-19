@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tempo Clicker - x e n o [ i ] n d e x</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Computer Modern Serif", serif;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .mySliders{
+            width: 80px;
+            background-color: transparent;
+            -webkit-appearance: none;
+        }
+
+        .mySliders:focus {
+            outline: none;
+        }
+
+        .mySliders::-webkit-slider-runnable-track {
+            background: #FF00647F;
+            height: 3px;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .mySliders::-webkit-slider-thumb {
+            width: 15px;
+            height: 15px;
+            background: #FF0064;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            border-radius: 8px;
+        }
+
+        #sketch-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body.l-theme {
+            background-color: #ffffff;
+            color: #000000;
+        }
+    </style>
+    <script src="banner.js" defer></script>
+</head>
+
+<body>
+    <div id="sketch-container"></div>
+
+    <script>
+        // Setup
+        let len = 800;
+        let w, h;
+        let c = len*0.9;
+
+        // Markings
+        let ed = 60;
+
+        // Tuning
+        // let gs = [700];
+        let gs = [400, 300];
+        let steps = 7;
+        let per = 1200;
+
+        let gslen;
+        let gsseq;
+        let ans;
+        let seq;
+        let pts;
+
+        let slideX;
+        let slideY;
+
+        function setup() {
+            let canvas = createCanvas(len, len);
+            canvas.parent('sketch-container');
+            w = width;
+            h = height;
+
+            slideX = createSlider(0.0, 1200.0, 0.0, 0.0001);
+            slideX.position(48, h/2 + 20);
+            slideX.size(w/2);
+            slideX.addClass("mySliders");
+
+            slideY = createSlider(0.0, 1200.0, 0.0, 0.0001);
+            slideY.position(48, h/2 + 40);
+            slideY.size(w/2);
+            slideY.addClass("mySliders");
+        }
+
+        function draw() {
+            // ed = int((mouseY / h) * 311); // Change ed by moving mouse.
+            
+            background(0);
+            
+            noFill();
+            stroke(255);
+            ellipse(w/2, h/2, c, c);
+            
+            for(let i = 0; i < ed; i++){
+                line(
+                (w/2) + cos(i/ed * TWO_PI - (HALF_PI)) * (w*0.9/2 * (1/1.05)),
+                (h/2) + sin(i/ed * TWO_PI - (HALF_PI)) * (w*0.9/2 * (1/1.05)),
+                (w/2) + cos(i/ed * TWO_PI - (HALF_PI)) * (w*0.9/2 * 1.05),
+                (h/2) + sin(i/ed * TWO_PI - (HALF_PI)) * (w*0.9/2 * 1.05)
+                );
+            }
+            
+            drawGen();
+        }
+
+        function drawGen() {
+            if(gs.length == 1){
+                gs[0] = slideX.value();
+            }
+
+            if(gs.length == 2){
+                gs[0] = slideX.value();
+                gs[1] = slideY.value();
+            }
+                
+            gslen = gs.length;
+            gsseq = Array(steps).fill().map((_, i) => gs[i%gslen]);
+            ans = 0;
+            seq = ([0].concat(gsseq)).map(n => {ans += n; return ans;});
+            seq.pop();
+            pts = seq.map(n => {return [
+                (w/2) + cos(((n/per) * TWO_PI) - HALF_PI)*(c/2),
+                (h/2) + sin(((n/per) * TWO_PI) - HALF_PI)*(c/2)
+            ]});
+            
+            stroke(255, 0, 100);
+            for(let i = 0; i < (steps-1); i++){
+                line(pts[i][0], pts[i][1], pts[i+1][0], pts[i+1][1]);
+            }
+        }
+
+    </script>
+</body>
+
+</html>
