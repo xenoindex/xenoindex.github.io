@@ -119,7 +119,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight, WEBGL);
+  createCanvas(window.innerWidth, windowHeight, WEBGL);
   
   // Set the font
   textFont(myFont);
@@ -382,7 +382,7 @@ function keyPressed() {
 
 function windowResized() {
   // Resize canvas when window size changes
-  resizeCanvas(windowWidth, windowHeight);
+  resizeCanvas(window.innerWidth, windowHeight);
 }
     </script>
 </body>
