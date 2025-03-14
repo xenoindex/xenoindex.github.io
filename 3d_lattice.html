@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tempo Clicker - x e n o [ i ] n d e x</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Computer Modern Serif", serif;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .mySliders{
+            width: 80px;
+            background-color: transparent;
+            -webkit-appearance: none;
+        }
+
+        .mySliders:focus {
+            outline: none;
+        }
+
+        .mySliders::-webkit-slider-runnable-track {
+            background: #FF00647F;
+            height: 3px;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .mySliders::-webkit-slider-thumb {
+            width: 15px;
+            height: 15px;
+            background: #FF0064;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            border-radius: 8px;
+        }
+
+        #sketch-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body.l-theme {
+            background-color: #ffffff;
+            color: #000000;
+        }
+    </style>
+    <script src="banner.js" defer></script>
+</head>
+
+<body>
+    <div id="sketch-container"></div>
+
+    <script>
+        // 3D Lattice Fraction Visualizer
+// Define the lattice data structure (3D matrix of fractions)
+let lattice = [
+[ [ [ 800, 441 ], [ 200, 147 ], [ 50, 49 ], [ 75, 49 ], [ 225, 196 ] ], [ [ 640, 441 ], [ 160, 147 ], [ 80, 49 ], [ 60, 49 ], [ 90, 49 ] ], [ [ 512, 441 ], [ 256, 147 ], [ 64, 49 ], [ 96, 49 ], [ 72, 49 ] ], [ [ 4096, 2205 ], [ 1024, 735 ], [ 256, 245 ], [ 384, 245 ], [ 288, 245 ] ], [ [ 16384, 11025 ], [ 4096, 3675 ], [ 2048, 1225 ], [ 1536, 1225 ], [ 2304, 1225 ] ] ], 
+[ [ [ 100, 63 ], [ 25, 21 ], [ 25, 14 ], [ 75, 56 ], [ 225, 224 ] ], [ [ 80, 63 ], [ 40, 21 ], [ 10, 7 ], [ 15, 14 ], [ 45, 28 ] ], [ [ 64, 63 ], [ 32, 21 ], [ 8, 7 ], [ 12, 7 ], [ 9, 7 ] ], [ [ 512, 315 ], [ 128, 105 ], [ 64, 35 ], [ 48, 35 ], [ 36, 35 ] ], [ [ 2048, 1575 ], [ 1024, 525 ], [ 256, 175 ], [ 192, 175 ], [ 288, 175 ] ] ], 
+[ [ [ 25, 18 ], [ 25, 24 ], [ 25, 16 ], [ 75, 64 ], [ 225, 128 ] ], [ [ 10, 9 ], [ 5, 3 ], [ 5, 4 ], [ 15, 8 ], [ 45, 32 ] ], [ [ 16, 9 ], [ 4, 3 ], [ 1, 1 ], [ 3, 2 ], [ 9, 8 ] ], [ [ 64, 45 ], [ 16, 15 ], [ 8, 5 ], [ 6, 5 ], [ 9, 5 ] ], [ [ 256, 225 ], [ 128, 75 ], [ 32, 25 ], [ 48, 25 ], [ 36, 25 ] ] ], 
+[ [ [ 175, 144 ], [ 175, 96 ], [ 175, 128 ], [ 525, 512 ], [ 1575, 1024 ] ], [ [ 35, 18 ], [ 35, 24 ], [ 35, 32 ], [ 105, 64 ], [ 315, 256 ] ], [ [ 14, 9 ], [ 7, 6 ], [ 7, 4 ], [ 21, 16 ], [ 63, 32 ] ], [ [ 56, 45 ], [ 28, 15 ], [ 7, 5 ], [ 21, 20 ], [ 63, 40 ] ], [ [ 448, 225 ], [ 112, 75 ], [ 28, 25 ], [ 42, 25 ], [ 63, 50 ] ] ], 
+[ [ [ 1225, 1152 ], [ 1225, 768 ], [ 1225, 1024 ], [ 3675, 2048 ], [ 11025, 8192 ] ], [ [ 245, 144 ], [ 245, 192 ], [ 245, 128 ], [ 735, 512 ], [ 2205, 2048 ] ], [ [ 49, 36 ], [ 49, 48 ], [ 49, 32 ], [ 147, 128 ], [ 441, 256 ] ], [ [ 49, 45 ], [ 49, 30 ], [ 49, 40 ], [ 147, 80 ], [ 441, 320 ] ], [ [ 392, 225 ], [ 98, 75 ], [ 49, 25 ], [ 147, 100 ], [ 441, 400 ] ] ]
+];
+
+// Camera and view control variables
+let rotX = 0;
+let rotY = 0;
+let zoomLevel = 120;
+let prevMouseX, prevMouseY;
+let isDragging = false;
+
+// Panning variables
+let panX = 0;
+let panY = 0;
+let isPanning = false;
+
+// Inertia-related variables
+let rotVelX = 0;
+let rotVelY = 0;
+let damping = 0.95; // Damping factor (0-1), closer to 1 means less damping
+let inertiaThreshold = 0.1; // Stop rotation when velocity falls below this threshold
+
+// Spacing between elements
+let spacing = 80;
+
+// Color variables - all configurable
+let bgColor = [0, 0, 0]; // Background
+let sphereColor = [255, 255, 255]; // Spheres
+let textColor = [255, 255, 255]; // Text
+let textShadowColor = [255, 255, 255, 80]; // Text shadow
+let lineColor = [255, 255, 255, 80]; // Lines
+let xAxisColor = [255, 0, 0]; // X axis
+let yAxisColor = [0, 255, 0]; // Y axis
+let zAxisColor = [0, 0, 255]; // Z axis
+
+// Node size settings
+let minNodeSize = 1;
+let maxNodeSize = 4;
+
+// Font variable
+let myFont;
+
+// Preload function to load the font
+function preload() {
+  // Load a default font that comes with p5.js
+  myFont = loadFont('https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Bold.otf');
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  
+  // Set the font
+  textFont(myFont);
+  
+  // Enable smooth rotation
+  angleMode(DEGREES);
+  
+  // Set text properties
+  textAlign(CENTER, CENTER);
+  textSize(8);
+  
+  // Add UI instructions
+  let instructions = createDiv('Drag: Rotate | Shift+Drag: Pan | Scroll: Zoom | Space: Reset View');
+  instructions.position(10, 10);
+  instructions.style('background-color', 'rgba(255, 255, 255, 0.7)');
+  instructions.style('padding', '10px');
+  instructions.style('border-radius', '5px');
+  instructions.style('font-family', 'Arial, sans-serif');
+}
+
+function draw() {
+  background(bgColor);
+  
+  // Apply inertia if not dragging
+  if (!isDragging && (Math.abs(rotVelX) > inertiaThreshold || Math.abs(rotVelY) > inertiaThreshold)) {
+    // Apply velocity to rotation
+    rotX += rotVelX;
+    rotY += rotVelY;
+    
+    // Constrain rotation on x-axis to prevent flipping
+    rotX = constrain(rotX, -90, 90);
+    
+    // Apply damping to gradually reduce velocity
+    rotVelX *= damping;
+    rotVelY *= damping;
+    
+    // Stop rotation when velocity becomes too small
+    if (Math.abs(rotVelX) < inertiaThreshold) rotVelX = 0;
+    if (Math.abs(rotVelY) < inertiaThreshold) rotVelY = 0;
+  }
+  
+  // Apply zoom
+  scale(zoomLevel / 100);
+  
+  // Apply translation for panning
+  translate(panX, panY, 0);
+  
+  // Apply rotation
+  rotateX(rotX);
+  rotateY(rotY);
+  
+  // Draw coordinate system axes for reference
+  drawAxes();
+  
+  // Draw the lattice
+  drawLattice();
+}
+
+function drawLattice() {
+  // Get dimensions of the lattice
+  const dimX = lattice.length;
+  const dimY = lattice[0].length;
+  const dimZ = lattice[0][0].length;
+  
+  // Calculate offsets to center the lattice
+  const offsetX = -(dimX - 1) * spacing / 2;
+  const offsetY = -(dimY - 1) * spacing / 2;
+  const offsetZ = -(dimZ - 1) * spacing / 2;
+  
+  // First, draw all connections
+  stroke(lineColor);
+  strokeWeight(1);
+  
+  for (let x = 0; x < dimX; x++) {
+    for (let y = 0; y < dimY; y++) {
+      for (let z = 0; z < dimZ; z++) {
+        const posX = offsetX + x * spacing;
+        const posY = offsetY + y * spacing;
+        const posZ = offsetZ + z * spacing;
+        
+        // Draw connecting lines if not at the edge
+        if (x < dimX - 1) {
+          line(posX, posY, posZ, posX + spacing, posY, posZ);
+        }
+        
+        if (y < dimY - 1) {
+          line(posX, posY, posZ, posX, posY + spacing, posZ);
+        }
+        
+        if (z < dimZ - 1) {
+          line(posX, posY, posZ, posX, posY, posZ + spacing);
+        }
+      }
+    }
+  }
+  
+  // Then, draw all nodes and text
+  for (let x = 0; x < dimX; x++) {
+    for (let y = 0; y < dimY; y++) {
+      for (let z = 0; z < dimZ; z++) {
+        const fraction = lattice[x][y][z];
+        const posX = offsetX + x * spacing;
+        const posY = offsetY + y * spacing;
+        const posZ = offsetZ + z * spacing;
+        
+        // Calculate fraction value for size
+        const fractionValue = fraction[0] / fraction[1];
+        
+        // Draw the fraction at its position
+        drawFractionNode(posX, posY, posZ, fraction, fractionValue);
+      }
+    }
+  }
+}
+
+function drawFractionNode(x, y, z, fraction, value) {
+  push();
+  translate(x, y, z);
+  
+  // Scale spheres based on fraction value (with limits)
+  const size = map(constrain(value, 0.2, 4), 0.2, 4, minNodeSize, maxNodeSize);
+  
+  // Draw sphere with configured color
+  noStroke();
+  fill(sphereColor);
+  sphere(size);
+  
+  // Draw fraction text - ensure it's always facing the camera
+  push();
+  // Reset the rotation to make the text face the camera
+  rotateY(-rotY);
+  rotateX(-rotX);
+  
+  // Draw shadow for better readability
+  fill(textShadowColor);
+  text(`${fraction[0]}/${fraction[1]}`, 0.5, -9.5, 0);
+  
+  // Draw text with configured color
+  fill(textColor);
+  text(`${fraction[0]}/${fraction[1]}`, 0, -10, 0);
+  
+  pop();
+  pop();
+}
+
+function drawAxes() {
+  // Draw x-axis
+  stroke(xAxisColor);
+  strokeWeight(2);
+  line(0, 0, 0, spacing, 0, 0);
+  push();
+  translate(spacing, 0, 0);
+  noStroke();
+  pop();
+  
+  // Draw y-axis
+  stroke(yAxisColor);
+  line(0, 0, 0, 0, -1 * spacing, 0);
+  push();
+  translate(0, -1 * spacing, 0);
+  noStroke();
+  pop();
+  
+  // Draw z-axis
+  stroke(zAxisColor);
+  line(0, 0, 0, 0, 0, spacing);
+  push();
+  translate(0, 0, spacing);
+  noStroke();
+  pop();
+}
+
+function mousePressed() {
+  // Start dragging
+  isDragging = true;
+  prevMouseX = mouseX;
+  prevMouseY = mouseY;
+  
+  // Check if shift key is pressed for panning mode
+  isPanning = keyIsDown(SHIFT);
+  
+  // Reset velocities when starting to drag if not panning
+  if (!isPanning) {
+    rotVelX = 0;
+    rotVelY = 0;
+  }
+}
+
+function mouseReleased() {
+  // Stop dragging and let inertia take over
+  isDragging = false;
+  isPanning = false;
+}
+
+function mouseDragged() {
+  if (isDragging) {
+    // Calculate movement amount based on mouse movement
+    const dx = mouseX - prevMouseX;
+    const dy = mouseY - prevMouseY;
+    
+    // Check if shift is being held down (panning mode)
+    isPanning = keyIsDown(SHIFT);
+    
+    if (isPanning) {
+      // Pan the camera
+      // Scale the panning based on zoom level for consistent feel
+      const panScale = 100 / zoomLevel;
+      panX += dx * panScale;
+      panY += dy * panScale;
+    } else {
+      // Calculate velocity based on mouse movement
+      rotVelY = dx * 0.2; // Scale down for smoother motion
+      rotVelX = -dy * 0.2; // Inverted vertical control
+      
+      // Update rotation angles
+      rotY += dx * 0.25;
+      rotX -= dy * 0.25;  // Inverted vertical control
+      
+      // Limit rotation on x-axis to prevent flipping
+      rotX = constrain(rotX, -90, 90);
+    }
+    
+    // Update previous mouse position
+    prevMouseX = mouseX;
+    prevMouseY = mouseY;
+  }
+}
+
+function mouseWheel(event) {
+  // Calculate zoom target based on scroll direction
+  const zoomTarget = zoomLevel - event.delta * 0.1;
+  
+  // Smoothly interpolate towards the target zoom
+  zoomLevel = lerp(zoomLevel, zoomTarget, 0.5);
+  
+  // Constrain zoom level to reasonable values
+  zoomLevel = constrain(zoomLevel, 100, 600);
+  
+  // Prevent default behavior (page scrolling)
+  return false;
+}
+
+function keyPressed() {
+  // Reset view when space is pressed
+  if (keyCode === 32) {
+    // Reset rotation and inertia
+    rotX = 0;
+    rotY = 0;
+    rotVelX = 0;
+    rotVelY = 0;
+    
+    // Reset zoom
+    zoomLevel = 120;
+    
+    // Reset panning to origin
+    panX = 0;
+    panY = 0;
+  }
+}
+
+function windowResized() {
+  // Resize canvas when window size changes
+  resizeCanvas(windowWidth, windowHeight);
+}
+    </script>
+</body>
+
+</html>
